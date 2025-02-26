@@ -102,6 +102,6 @@ func (us *UserCont) DeleteUser(c echo.Context) error {
 	if err := us.manager.DeleteUser(objectId); err != nil {
 		return c.JSON(http.StatusNotFound, map[string]string{"error": "User not found"})
 	}
-	return c.JSON(http.StatusOK, map[string]string{"message": "User successfully deleted"})
+	return c.JSON(http.StatusNoContent, map[string]string{"message": "User successfully deleted"})
 
 }

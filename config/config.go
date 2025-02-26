@@ -24,14 +24,14 @@ func LoadConfig() (Config, error) {
 }
 type ConsumerConfig struct {
 	Url                string `env:"URL" validate:"required" envDefault:"amqp://guest:guest@localhost:5672/"`
-	Exchange           string `env:"EXCHANGE_NAME"  envDefault:"coures_add_exchange"`
-	ExchangeType       string `env:"EXCHANGE_TYPE"  envDefault:"direct"`
-	PrefetchCount      int    `env:"PREFETCH_COUNT"  envDefault:"100"`
-	ConnectionPoolSize int    `env:"CONNECTIONPOOL_SIZE"  envDefault:"10"`
-	QueueName          string `env:"QUEUE_NAME" envDefault:"coures_add"`
-	BindingKeyName     string `env:"BINDING_KEY_NAME" envDefault:"coures_add_bindkey"`
-	DelayedQueueName   string `env:"DELAYED_QUEUE_NAME" envDefault:"coures_add_delay_queue"`
-	QueueTaskName      string `env:"COURES_QUEUE_TASK"  envDefault:"coures"`
+	Exchange           string `env:"EXCHANGE_NAME" envDefault:"course_add_exchange"`
+	ExchangeType       string `env:"EXCHANGE_TYPE" envDefault:"direct"`
+	PrefetchCount      int    `env:"PREFETCH_COUNT" envDefault:"100"`
+	ConnectionPoolSize int    `env:"CONNECTIONPOOL_SIZE" envDefault:"10"`
+	QueueName          string `env:"QUEUE_NAME" envDefault:"course_add"`
+	BindingKeyName     string `env:"BINDING_KEY_NAME" envDefault:"course_add_bindkey"`
+	DelayedQueueName   string `env:"DELAYED_QUEUE_NAME" envDefault:"course_add_delay_queue"`
+	QueueTaskName      string `env:"COURSE_QUEUE_TASK" envDefault:"course"`
 }
 
 var Consumerconfig ConsumerConfig

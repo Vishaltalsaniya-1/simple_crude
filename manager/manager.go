@@ -36,15 +36,16 @@ func (um *UserMgr) CreateUser(req request.StdRequest) (response.StdResponse, err
 		return response.StdResponse{}, fmt.Errorf("failed to check user existence: %v", err)
 	}
 
-	if req.CreatedAt == nil {
-		now := time.Now()
-		req.CreatedAt = &now
-	}
+	// if req.CreatedAt == nil {
+	// 	now := time.Now()
+	// 	req.CreatedAt = &now
+	// }
 
-	if req.UpdatedAt == nil {
-		now := time.Now()
-		req.UpdatedAt = &now
-	}
+	// if req.UpdatedAt == nil {
+	// 	now := time.Now()
+	// 	req.UpdatedAt = &now
+	// }
+	// now := time.Now()
 
 	user := models.Std{
 		Id:          primitive.NewObjectID(),
@@ -53,16 +54,16 @@ func (um *UserMgr) CreateUser(req request.StdRequest) (response.StdResponse, err
 		Description: req.Description,
 		Tag:         req.Tag,
 		Student:     req.Student,
-		CreatedAt:   req.CreatedAt,
-		UpdatedAt:   req.UpdatedAt,
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
 		DeletedAt:   nil,
 	}
 
-	_, err = mongoCollection.InsertOne(context.Background(), user)
-	if err != nil {
-		log.Printf("MongoDB insertion error: %v\n", err)
-		return response.StdResponse{}, fmt.Errorf("failed to insert new user: %v", err)
-	}
+	// _, err = mongoCollection.InsertOne(context.Background(), user)
+	// if err != nil {
+	// 	log.Printf("MongoDB insertion error: %v\n", err)
+	// 	return response.StdResponse{}, fmt.Errorf("failed to insert new user: %v", err)
+	// }
 	// userData, err := json.Marshal(user)
 	// if err != nil {
 	// 	logrus.Errorf("Error marshalling user data: %v", err)
@@ -86,7 +87,7 @@ func (um *UserMgr) CreateUser(req request.StdRequest) (response.StdResponse, err
 		return response.StdResponse{}, err
 	}
 
-	if err := producerService.Publish(jsonData, "UserCreatedTask"); err != nil {
+	if err := producerService.Publish(jsonData); err != nil {
 		log.Println("Error publishing user data:", err)
 		return response.StdResponse{}, err
 	}

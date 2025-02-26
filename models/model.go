@@ -13,7 +13,7 @@ type Std struct {
 	Description string             `json:"description" bson:"description"`
 	Tag         []string           `json:"tag"  bson:"tag"`
 	Student     bool               `json:"student" bson:"student"`
-	CreatedAt   *time.Time         `json:"created_at,omitempty" bson:"created_at,omitempty"`
-	UpdatedAt   *time.Time         `json:"updated_at,omitempty" bson:"updated_at,omitempty"`
+	CreatedAt   time.Time          `json:"created_at,omitempty" bson:"created_at,omitempty"`
+	UpdatedAt   time.Time          `json:"updated_at,omitempty" bson:"updated_at,omitempty"`
 	DeletedAt   *time.Time         `json:"deleted_at,omitempty" bson:"deleted_at,omitempty"`
 }

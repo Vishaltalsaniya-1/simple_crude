@@ -9,6 +9,7 @@ import (
 	"simple_crude/controller"
 	"simple_crude/db"
 	"simple_crude/manager"
+	"simple_crude/producer"
 	"syscall"
 
 	"github.com/labstack/echo/v4"
@@ -25,15 +26,15 @@ func StartConsumerService() error {
 	return nil
 }
 
-// func StartProducerService() (*producer.RMP, error) {
-// 	producerInstance := producer.NewProducer().(*producer.RMP)
-// 	if err := producerInstance.Initialize(); err != nil {
-// 		log.Fatalf("Failed to start producer service: %v", err)
-// 		return nil, err
-// 	}
-// 	log.Println("Producer service started successfully")
-// 	return producerInstance, nil
-// }
+func StartProducerService() (*producer.RMP, error) {
+	producerInstance := producer.NewProducer().(*producer.RMP)
+	if err := producerInstance.Initialize(); err != nil {
+		log.Fatalf("Failed to start producer service: %v", err)
+		return nil, err
+	}
+	log.Println("Producer service started successfully")
+	return producerInstance, nil
+}
 
 func main() {
 	if err := db.Connect(); err != nil {
@@ -42,15 +43,9 @@ func main() {
 	}
 	cnf.LoadConsumer()
 
-	// consumerInstance := consumer.NewConsumer()
-	// if err := consumerInstance.Initialize(); err != nil {
-	// 	log.Fatalf("Failed to initialize consumer: %v", err)
-	// }
 	go StartConsumerService()
-	// producerInstance := producer.NewProducer()
-	// if err := producerInstance.Initialize(); err != nil {
-	// 	log.Fatalf("Failed to initialize producer: %v", err)
-	// }
+	go StartProducerService()
+
 	log.Println("Application Started Successfully")
 
 	userManager := manager.NewUserManager()
@@ -66,8 +61,6 @@ func main() {
 	e.DELETE("/students/:id", userController.DeleteUser)
 	e.PUT("/students/:id", userController.UpdateUser)
 
-	// log.Println("Server started on port 8082")
-	// e.Logger.Fatal(e.Start(":8082"))
 	go func() {
 		log.Println("Server started on port 8082")
 		if err := e.Start(":8082"); err != nil {

@@ -4,9 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"log"
 	cnf "simple_crude/config"
+	"simple_crude/db"
+	"simple_crude/models"
 
 	"github.com/sirupsen/logrus"
 	"github.com/surendratiwari3/paota/config"
@@ -55,7 +56,7 @@ func (c *Consumer) Initialize() error {
 	}
 
 	for key, value := range regTasks {
-		fmt.Printf("Key: %s, Value: %v\n", key, value)
+		logrus.Infof("Registered Task: Key=%s, Function=%v", key, value)
 	}
 	// fmt.Printf("  Rregtaske %+v",regTasks)
 	log.Printf("Consumer RegisterTasks.......")
@@ -76,7 +77,13 @@ func (c *Consumer) Initialize() error {
 }
 
 func (c *Consumer) ProcessTask(arg *schema.Signature) error {
-	log.Printf("Consumer Processtask.......\n")
+	mongoCollection := db.GetDB().Database("Courses").Collection("students")
+	if mongoCollection == nil {
+		logrus.Error("MongoDB collection is nil")
+		return errors.New("database connection not established")
+	}
+
+	log.Println("Received a new task to process...")
 
 	if len(arg.Args) == 0 {
 		logrus.Warn("No arguments received in the task")
@@ -92,16 +99,31 @@ func (c *Consumer) ProcessTask(arg *schema.Signature) error {
 			return errors.New("invalid argument type")
 		}
 
-		var userData map[string]interface{}
-		if err := json.Unmarshal([]byte(argStr), &userData); err != nil {
-			logrus.Errorf("Error decoding task data: %v", err)
+		var user models.Std
+		logrus.Infof("Raw task argument: %s", argStr)
+		if err := json.Unmarshal([]byte(argStr), &user); err != nil {
+			logrus.Errorf("Error decoding user data: %v", err)
+			return err
+		}
+		logrus.Infof("Decoded User: %+v", user)
+
+		result, err := mongoCollection.InsertOne(context.Background(), user)
+		if err != nil {
+			logrus.Errorf("Database insertion failed: %v", err)
 			return err
 		}
 
-		logrus.Infof("Task successfully processed: %+v", userData)
+		logrus.Info("User data successfully inserted into the database.", result.InsertedID)
 	}
+
 	return nil
 }
+
+// var userData map[string]interface{}
+// if err := json.Unmarshal([]byte(argStr), &userData); err != nil {
+// 	logrus.Errorf("Error decoding task data: %v", err)
+// 	return err
+// }
 
 // func (c *Consumer) Print(taskData string) error {
 // 	logrus.Infof("Received Task Data: %s", taskData)

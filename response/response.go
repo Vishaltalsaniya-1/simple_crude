@@ -13,7 +13,7 @@ type StdResponse struct {
 	Description string             `json:"description" bson:"description"`
 	Tag         []string           `json:"tag" bson:"tag"`
 	Student     bool               `json:"student" bson:"student"`
-	CreatedAt   *time.Time         `json:"created_at"`
-	UpdatedAt   *time.Time         `json:"updated_at"`
+	CreatedAt   time.Time         `json:"created_at"`
+	UpdatedAt   time.Time         `json:"updated_at"`
 	DeletedAt   *time.Time         `json:"deleted_at,omitempty"`
 }
